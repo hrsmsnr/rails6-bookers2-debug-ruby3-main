@@ -40,4 +40,18 @@ class User < ApplicationRecord
     following_users.include?(user)
   end
   
+  def self.looks(accuracy, keyword)
+    if accuracy == "perfect_match"
+      @user = User.where("name LIKE?", "#{keyword}")
+    elsif accuracy == "forward_match"
+      @user = User.where("name LIKE?", "#{keyword}%")
+    elsif accuracy == "backward_match"
+      @user = User.where("name LIKE?", "%#{keyword}")
+    elsif accuracy == "partial_match"
+      @user = User.where("name LIKE?", "%#{keyword}%")
+    else
+      @user = User.all
+    end
+  end
+  
 end
