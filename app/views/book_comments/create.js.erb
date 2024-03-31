@@ -1,0 +1,3 @@
+$(".comment-list").html("<%= j(render 'book_comments/comment-list', book: @book) %>");
+$(".comment-text").val('');
+$(".comment-count").text("コメント数:<%= @book.book_comments.count %>");

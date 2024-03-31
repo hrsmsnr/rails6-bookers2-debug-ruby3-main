@@ -1,0 +1,12 @@
+<%
+=begin
+%>
+$('#favorite-btn_<%= @book.id %>')
+はidセレクター
+$(".favorite-btn_<%= @book.id %>")
+はクラスセレクター
+<%
+=end
+%>
+
+$(".favorite-btn_<%= @book.id %>").html("<%= j(render 'favorites/favorite-btn', book: @book) %>");
