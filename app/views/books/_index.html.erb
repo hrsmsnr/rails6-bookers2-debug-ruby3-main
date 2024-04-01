@@ -15,8 +15,7 @@
           <% end %>
         </td>
         <td><%= link_to book.title, book_path(book.id) %></td>
-        <td><%= book.body %></td>
-        
+        <td><%= book.created_at %></td>
         
         <td class="favorite-btn_<%= book.id %>">
           <% unless book.user.id == current_user.id %>
@@ -24,11 +23,52 @@
           <%end%>
         </td>
         
-        
         <td>
           コメント数:<%= book.book_comments.count %>
         </td>
       </tr>
     <% end %>
+  </tbody>
+</table>
+
+<h2>投稿日の前日比・前週比</h2>
+<table class="table table-bordered">
+  <thead>
+    <th>今日の投稿数</th>
+    <th>前日の投稿数</th>
+    <th>前日比</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @today_count %></td>
+      <td><%= @yesterday_count %></td>
+      <td>
+        <% if @yesterday_count == 0 %>
+          none
+        <% else %>
+          <%= (@today_count*100)/@yesterday_count %>
+          %
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="table table-bordered">
+  <thead>
+    <th>今週の投稿数</th>
+    <th>前週の投稿数</th>
+    <th>前週比</th>
+  </thead>
+  <tbody>
+    <td><%= @this_week_count %></td>
+    <td><%= @last_week_count %></td>
+    <td>
+      <% if @last_week_count == 0 %>
+        none
+      <% else %>
+        <%= (@this_week_count*100)/@last_week_count %>
+        %
+      <% end %>
+    </td>
   </tbody>
 </table>
