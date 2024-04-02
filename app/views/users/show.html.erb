@@ -9,6 +9,12 @@
     <div class='col-md-8 offset-md-1'>
       <h2>Books</h2>
       <%= render 'books/index',books: @books %>
+      <%= render 'book_count_graph',books: @books %>
+<% 
+=begin %>
+      <%= render 'book_count', books: @books %>
+<% 
+=end %>
     </div>
   </div>
 </div>

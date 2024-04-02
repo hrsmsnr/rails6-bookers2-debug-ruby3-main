@@ -11,15 +11,6 @@ class BooksController < ApplicationController
   def index
     @books = Book.all
     @book = Book.new
-    @today = Date.today
-    @today_count = @books.where("DATE(created_at) = ?", Date.today).count
-    @yesterday_count = @books.where("DATE(created_at) = ?", Date.today - 1.day).count
-    # @yesterday_count = @books.where("DATE(created_at) = ?", 1.day.ago).count
-    @this_week_count = @books.where(created_at: Date.today - 1.week + 1.day..@today + 1.day).count
-    # @this_week_count = @books.where(created_at: 1.week.ago..Time.now).count
-    @last_week_count = @books.where(created_at: Date.today - 2.week + 1.day..Date.today - 1.week + 1.day).count
-    # @last_week_count = @books.where(created_at: 2.week.ago..1.week.ago).count
-    
   end
 
   def create
