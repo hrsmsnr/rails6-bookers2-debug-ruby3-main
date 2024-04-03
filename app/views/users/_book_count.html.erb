@@ -1,41 +1,141 @@
 <h2>投稿日の前日比・前週比</h2>
 <table class="table table-bordered">
-  <thead>
-    <th>今日の投稿数</th>
-    <th>前日の投稿数</th>
-    <th>前日比</th>
-  </thead>
-  <tbody>
-    <tr>
-      <td><%= @today_count %></td>
-      <td><%= @yesterday_count %></td>
-      <td>
-        <% if @yesterday_count == 0 %>
-          none
-        <% else %>
-          <%= (@today_count*100)/@yesterday_count %>
-          %
-        <% end %>
-      </td>
-    </tr>
-  </tbody>
+	<thead>
+		<th>今日の投稿数</th>
+		<th>前日の投稿数</th>
+		<th>前日比</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td><%= @today_count %></td>
+			<td><%= @yesterday_count %></td>
+			<td>
+				<% if @yesterday_count == 0 %>
+					none
+				<% else %>
+					<%= (@today_count*100)/@yesterday_count %>
+					%
+				<% end %>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <table class="table table-bordered">
-  <thead>
-    <th>今週の投稿数</th>
-    <th>前週の投稿数</th>
-    <th>前週比</th>
-  </thead>
-  <tbody>
-    <td><%= @this_week_count %></td>
-    <td><%= @last_week_count %></td>
-    <td>
-      <% if @last_week_count == 0 %>
-        none
-      <% else %>
-        <%= (@this_week_count*100)/@last_week_count %>
-        %
-      <% end %>
-    </td>
-  </tbody>
+	<thead>
+		<th>今週の投稿数</th>
+		<th>前週の投稿数</th>
+		<th>前週比</th>
+	</thead>
+	<tbody>
+		<td><%= @this_week_count %></td>
+		<td><%= @last_week_count %></td>
+		<td>
+			<% if @last_week_count == 0 %>
+				none
+			<% else %>
+				<%= (@this_week_count*100)/@last_week_count %>
+				%
+			<% end %>
+		</td>
+	</tbody>
 </table>
+
+<!--1週間のデータ＆グラフ-->
+
+<h2>7日間分の投稿数</h2>
+<table class="table table-bordered">
+	<thead>
+
+		<th>6日前</th>
+		<th>5日前</th>
+		<th>4日前</th>
+		<th>3日前</th>
+		<th>2日前</th>
+		<th>1日前</th>
+		<th>今日</th>
+	</thead>
+	<tbody>
+		<tr>
+			<% i = 6 %>
+			<% while i >= 0 do %>
+				<td><%= books.where("DATE(created_at) = ?", Date.today - i.day ).count %></td>
+				<% i = i - 1 %>
+			<% end %>
+		</tr>
+	</tbody>
+</table>
+
+<canvas id="chart"></canvas>
+<script>
+	$(document).on('turbolinks:load', function() {
+		var ctx = document.getElementById("chart");
+		var chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: ['6日前', '5日前', '4日前', '3日前', '2日前', '1日前', '今日'],
+				datasets: [
+					{
+						label: '投稿した本の数',
+						data: [
+							<% i = 6 %>
+							<% while i >= 0 do %>
+								<%= books.where("DATE(created_at) = ?", Date.today - i.day ).count %>,
+								<% i = i - 1 %>
+							<% end %>
+						],
+						borderColor: "rgba(0,0,255,1)",
+						backgroundColor: "rgba(0,0,0,0)",
+						tension: 0.4
+					}
+				],
+			},
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: '7日間の投稿数の比較'
+					}
+				},
+				responsive: true,
+				scales: {
+					y:{
+						suggestedMin: 0,
+						suggestedMax: 10
+					},
+					x:{
+						stacked: true
+					},
+				},
+			}
+		});
+	});
+</script>
+
+<!--投稿数検索機能-->
+<div class="col mt-5">
+	<div class="search_form">
+	<%= form_with url: count_search_path(@user), local: false, method: :get do |f| %>
+		<%= f.date_field :select_date %>
+		<%= f.submit "検索", class: "btn btn-primary" %>
+	<% end %>
+	</div>
+	<div class="search_count">
+		<div class="count_result">
+			<% unless @count_result == nil %>
+			<h2>検索結果</h2>
+			<table class="table table-bordered table-wigth">
+				<thead>
+					<th>
+						検索結果
+					</th>
+				</thead>
+				<tbody>
+					<td>
+						<%= @count_result %>
+					</td>
+				</tbody>
+			</table>
+			<% end %>
+		<div>
+	</div>
+</div>
